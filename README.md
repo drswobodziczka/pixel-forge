@@ -53,3 +53,19 @@ If you prefer using a browser-based tool directly:
     - **Bad:** "A plane"
     - **Good:** "pixel art sprite of a ww2 fighter plane, top down view, neutral background, 32 bit color, clean lines, game asset --no shading"
 - **Seed:** Always lock the seed (e.g., `seed=42`) when iterating on a prompt to see actual changes.
+
+## Local Development
+
+Since PixelForge is a client-side web application (HTML/CSS/JS), you can run it with any static file server.
+
+### using Python (pre-installed on macOS)
+```bash
+python3 -m http.server
+```
+Then open [http://localhost:8000](http://localhost:8000) in your browser.
+
+### using npx (Node.js)
+```bash
+npx serve .
+```
+
