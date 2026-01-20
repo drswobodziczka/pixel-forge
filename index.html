@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PixelForge - Indie Game Asset Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#00f2ff',
+                        secondary: '#7000ff',
+                        dark: '#0a0a0f',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="flex flex-col items-center justify-center p-4 sm:p-8">
+
+    <div class="w-full max-w-6xl flex flex-col lg:flex-row gap-8 items-start">
+
+        <!-- Left Panel: Controls -->
+        <div class="w-full lg:w-1/3 glass-panel rounded-2xl p-8 flex flex-col gap-6 animate-fade-in-up">
+            <div class="mb-2">
+                <h1
+                    class="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary neon-text mb-2">
+                    PixelForge</h1>
+                <p class="text-gray-400 text-sm">Instant AI Asset Generator for Indie Devs</p>
+            </div>
+
+            <!-- Provider Selection -->
+            <div class="flex flex-col gap-2">
+                <label for="provider" class="text-sm font-semibold text-gray-300 uppercase tracking-wider">AI
+                    Provider</label>
+                <select id="provider"
+                    class="w-full bg-black/30 border border-gray-700 rounded-xl p-3 text-white focus:outline-none focus:border-primary transition-colors">
+                    <option value="Pollinations">Pollinations.ai (Free)</option>
+                    <option value="HuggingFace">Hugging Face (API Key Required)</option>
+                    <option value="PixelLab">PixelLab (API Key Required)</option>
+                    <option value="Recraft">Recraft (API Key Required)</option>
+                </select>
+            </div>
+
+            <!-- API Key Input (Hidden by default) -->
+            <div id="apiKeyContainer" class="flex flex-col gap-2 hidden">
+                <label for="apiKey" class="text-sm font-semibold text-gray-300 uppercase tracking-wider">API Key</label>
+                <input type="password" id="apiKey" placeholder="Enter your API Key"
+                    class="w-full bg-black/30 border border-gray-700 rounded-xl p-3 text-white focus:outline-none focus:border-primary transition-colors">
+                <p class="text-xs text-gray-500">Key is stored locally in your browser.</p>
+            </div>
+
+            <!-- Prompt Input -->
+            <div class="flex flex-col gap-2">
+                <label for="prompt" class="text-sm font-semibold text-gray-300 uppercase tracking-wider">Prompt</label>
+                <textarea id="prompt" rows="4"
+                    class="w-full bg-black/30 border border-gray-700 rounded-xl p-4 text-white placeholder-gray-600 focus:outline-none focus:border-primary transition-colors resize-none neon-border"
+                    placeholder="e.g., pixel art sprite of a cyberpunk samurai with a glowing katana..."></textarea>
+            </div>
+
+            <!-- Settings -->
+            <div class="grid grid-cols-2 gap-4">
+                <div class="flex flex-col gap-2">
+                    <label for="width" class="text-xs font-semibold text-gray-400 uppercase">Width</label>
+                    <input type="number" id="width" value="512" min="64" max="2048" step="64"
+                        class="w-full bg-black/30 border border-gray-700 rounded-lg p-3 text-white focus:outline-none focus:border-primary transition-colors text-center">
+                </div>
+                <div class="flex flex-col gap-2">
+                    <label for="height" class="text-xs font-semibold text-gray-400 uppercase">Height</label>
+                    <input type="number" id="height" value="512" min="64" max="2048" step="64"
+                        class="w-full bg-black/30 border border-gray-700 rounded-lg p-3 text-white focus:outline-none focus:border-primary transition-colors text-center">
+                </div>
+            </div>
+
+            <!-- Dynamic Provider Settings -->
+            <div id="providerSettings" class="flex flex-col gap-4">
+                <!-- Javascript will inject inputs here based on getSchema() -->
+            </div>
+
+            <!-- Seed (Optional) -->
+            <div class="flex flex-col gap-2">
+                <label for="seed" class="text-xs font-semibold text-gray-400 uppercase">Seed (Optional)</label>
+                <input type="number" id="seed" placeholder="Random"
+                    class="w-full bg-black/30 border border-gray-700 rounded-lg p-3 text-white focus:outline-none focus:border-primary transition-colors">
+            </div>
+
+            <!-- Generate Button -->
+            <button id="generateBtn"
+                class="btn-primary w-full py-4 rounded-xl font-bold text-white text-lg tracking-wide flex items-center justify-center gap-2 mt-4">
+                <span>GENERATE ASSET</span>
+                <div id="loadingSpinner" class="loader hidden"></div>
+            </button>
+        </div>
+
+        <!-- Right Panel: Preview -->
+        <div
+            class="w-full lg:w-2/3 glass-panel rounded-2xl p-4 min-h-[500px] flex flex-col items-center justify-center relative overflow-hidden group">
+
+            <!-- Placeholder State -->
+            <div id="placeholder" class="text-center p-8">
+                <div
+                    class="w-24 h-24 rounded-full bg-white/5 flex items-center justify-center mx-auto mb-4 border border-white/10">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-500" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                </div>
+                <p class="text-gray-500 text-lg">Your asset will appear here</p>
+            </div>
+
+            <!-- Image Result -->
+            <img id="resultImage" src="" alt="Generated Asset"
+                class="hidden w-auto h-auto max-w-full max-h-[700px] rounded-lg shadow-2xl transition-transform duration-500 hover:scale-[1.02]">
+
+            <!-- Action Bar (Download) -->
+            <div id="actionBar"
+                class="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/90 to-transparent translate-y-full transition-transform duration-300 flex justify-center gap-4">
+                <button id="downloadBtn"
+                    class="bg-white text-black px-6 py-3 rounded-lg font-bold hover:bg-gray-200 transition-colors flex items-center gap-2 shadow-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    </svg>
+                    Download
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="js/providers.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
