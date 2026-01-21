@@ -14,6 +14,14 @@ PixelForge is a client-side web application for generating 2D game assets (sprit
 
 All tasks, bugs, and feature requests are tracked via GitHub Issues and managed on the Project Board.
 
+## Development Principles & Workflow
+
+1.  **No ticket, no work**: Every task must be associated with a GitHub Issue. Do not start work without an issue reference.
+2.  **Pull Request Workflow**: All changes must go through a Pull Request. No direct pushes to the main branch.
+3.  **Concept Brainstorming**: Every new concept must first be brainstormed with the agent. The result must be finalized as a GitHub Issue with the appropriate label from the project list.
+4.  **Conventional Commits**: All commit messages must follow the [Conventional Commits](https://www.conventionalcommits.org/) specification (e.g., `feat:`, `fix:`, `docs:`, `chore:`).
+5.  **Agent UI Testing**: Every UI change MUST be explicitly tested by the agent using the browser tools to ensure it works as expected.
+
 ## Development Commands
 
 ### Running the Application
