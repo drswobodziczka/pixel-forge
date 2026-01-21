@@ -6,6 +6,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 PixelForge is a client-side web application for generating 2D game assets (sprites, textures, backgrounds) using various AI image generation APIs. It's built with vanilla JavaScript, HTML, and Tailwind CSS with no build process required.
 
+## Project Management
+
+- **Task Management**: GitHub Projects and GitHub Issues
+- **Project Board**: [Pixel Forge Roadmap](https://github.com/users/drswobodziczka/projects/3)
+- **Repository**: https://github.com/drswobodziczka/pixel-forge
+
+All tasks, bugs, and feature requests are tracked via GitHub Issues and managed on the Project Board.
+
 ## Development Commands
 
 ### Running the Application
