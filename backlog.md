@@ -1,8 +1,5 @@
 # Project Backlog
 
-## Future Features
-- [ ] **AI Prompt Assistant**: Integrate OpenRouter to help users refine prompts for better game asset generation (system prompt specialized for 2D indie games).
-- [ ] **GitHub Migration**: Move the project to a GitHub repository with CI/CD.
+[View the Pixel Forge Roadmap on GitHub](https://github.com/users/drswobodziczka/projects/3)
 
-## Improvements
-- [ ] **Pollinations.ai Quality**: Investigate model selection and advanced parameters to reduce "artsy" artifacts and improve sprite consistency.
+All tasks and future features have been migrated to GitHub Issues and the Project Board.

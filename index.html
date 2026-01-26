@@ -54,6 +54,22 @@
                 <input type="password" id="apiKey" placeholder="Enter your API Key"
                     class="w-full bg-black/30 border border-gray-700 rounded-xl p-3 text-white focus:outline-none focus:border-primary transition-colors">
                 <p class="text-xs text-gray-500">Key is stored locally in your browser.</p>
+
+                <!-- Error / Instructions Container -->
+                <div id="apiKeyHelp"
+                    class="hidden bg-red-900/20 border border-red-500/50 rounded-lg p-4 mt-2 text-sm text-gray-300 animate-fade-in-up">
+                    <div class="flex items-center gap-2 text-red-400 font-bold mb-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd"
+                                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                                clip-rule="evenodd" />
+                        </svg>
+                        Missing API Key
+                    </div>
+                    <div id="apiKeyInstructions" class="space-y-2 text-xs">
+                        <!-- Instructions injected by JS -->
+                    </div>
+                </div>
             </div>
 
             <!-- Prompt Input -->
