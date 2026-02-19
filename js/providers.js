@@ -47,19 +47,31 @@ class PollinationsProvider extends APIProvider {
                 options: [
                     { value: 'flux', label: 'Flux (Best Quality)' },
                     { value: 'turbo', label: 'Turbo (Fast)' },
-                    { value: 'unity', label: 'Unity' } // Added Unity based on common Pollinations usage
+                    { value: 'pixel', label: 'Pixel Art Model' } 
                 ]
+            },
+            {
+                id: 'negative_prompt',
+                label: 'Negative Prompt',
+                type: 'text',
+                default: '',
+                placeholder: 'bad quality, text, watermark...'
+            },
+            {
+                id: 'enhance',
+                label: 'Enhance Prompt (AI)',
+                type: 'checkbox',
+                default: false
             }
         ];
     }
 
     async generate(prompt, options) {
-        const { width, height, seed, model } = options;
+        const { width, height, seed, model, negative_prompt, enhance } = options;
         const encodedPrompt = encodeURIComponent(prompt);
         
-        // Construct URL with parameters
-        // Added 'nologo=true' to remove watermarks if possible
-        // Added 'model' parameter support
+        // Construct URL with parameters (Legacy Endpoint)
+        // URL Pattern: https://image.pollinations.ai/prompt/{prompt}?param=value
         let url = `${this.baseUrl}/${encodedPrompt}?width=${width}&height=${height}&nologo=true`;
         
         if (seed) {
@@ -68,6 +80,14 @@ class PollinationsProvider extends APIProvider {
         
         if (model) {
             url += `&model=${model}`;
+        }
+
+        if (negative_prompt) {
+             url += `&negative=${encodeURIComponent(negative_prompt)}`;
+        }
+
+        if (enhance) {
+            url += `&enhance=true`;
         }
 
         // Pollinations returns the image directly, so the URL itself is the source.

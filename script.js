@@ -14,6 +14,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const providerSelect = document.getElementById('provider');
     const apiKeyContainer = document.getElementById('apiKeyContainer');
     const apiKeyInput = document.getElementById('apiKey');
+    const apiKeyHelp = document.getElementById('apiKeyHelp');
+    const apiKeyInstructions = document.getElementById('apiKeyInstructions');
     const providerSettingsContainer = document.getElementById('providerSettings');
 
     // Load saved API Key
@@ -107,7 +109,33 @@ document.addEventListener('DOMContentLoaded', () => {
                 range.id = `setting_${field.id}`;
                 wrapper.appendChild(input); 
                 providerSettingsContainer.appendChild(wrapper);
+                providerSettingsContainer.appendChild(wrapper);
                 return; // Special early return for range structure to avoid double appending
+            } else if (field.type === 'checkbox') {
+                input = document.createElement('div');
+                input.className = 'flex items-center gap-2';
+                
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.checked = field.default;
+                checkbox.className = 'w-5 h-5 accent-primary bg-black/30 border border-gray-700 rounded focus:ring-primary';
+                checkbox.id = `setting_${field.id}`;
+                
+                const cbLabel = document.createElement('span');
+                cbLabel.className = 'text-white text-sm';
+                cbLabel.textContent = field.label; // Use label next to checkbox
+
+                input.appendChild(checkbox);
+                input.appendChild(cbLabel);
+
+                // For checkbox, we don't want the top label strictly, or we can use it.
+                // Current structure puts a label above every field. 
+                // Let's hide the top label for checkbox or reuse it.
+                wrapper.querySelector('label').style.display = 'none'; 
+                
+                wrapper.appendChild(input);
+                providerSettingsContainer.appendChild(wrapper);
+                return;
             }
 
             if (input) {
@@ -175,7 +203,11 @@ document.addEventListener('DOMContentLoaded', () => {
         schema.forEach(field => {
             const input = document.getElementById(`setting_${field.id}`);
             if (input) {
-                dynamicOptions[field.id] = input.value;
+                if (input.type === 'checkbox') {
+                    dynamicOptions[field.id] = input.checked;
+                } else {
+                    dynamicOptions[field.id] = input.value;
+                }
             }
         });
 
@@ -201,11 +233,59 @@ document.addEventListener('DOMContentLoaded', () => {
             setLoading(false);
         } catch (error) {
             console.error(error);
-            alert('Failed to generate image. Please try again.');
+            
+            // Check for missing API Key error
+            if (error.message.includes('API Key is required')) {
+                showApiKeyError(provider.name); // Pass the provider name or handle getting it
+            } else {
+                alert(`Failed to generate: ${error.message}`);
+            }
+            
             placeholder.classList.remove('hidden');
             setLoading(false);
         }
     }
+
+    const apiKeyGuides = {
+        'Hugging Face': `
+            <ol class="list-decimal pl-4 space-y-1">
+                <li>Log in to <a href="https://huggingface.co/" target="_blank" class="text-primary hover:underline">huggingface.co</a></li>
+                <li>Go to <b>Settings > Access Tokens</b></li>
+                <li>Create a new token (Read access)</li>
+                <li>Paste it above</li>
+            </ol>`,
+        'PixelLab': `
+            <ol class="list-decimal pl-4 space-y-1">
+                <li>Log in to <a href="https://pixellab.ai/" target="_blank" class="text-primary hover:underline">pixellab.ai</a></li>
+                <li>Go to <b>Dashboard > API Keys</b></li>
+                <li>Generate a new key</li>
+                <li>Paste it above</li>
+            </ol>`,
+        'Recraft': `
+            <ol class="list-decimal pl-4 space-y-1">
+                <li>Log in to <a href="https://recraft.ai/" target="_blank" class="text-primary hover:underline">recraft.ai</a></li>
+                <li>Go to <b>Profile > API</b></li>
+                <li>Generate a new key</li>
+                <li>Paste it above</li>
+            </ol>`
+    };
+
+    function showApiKeyError(providerName) {
+        // Find instructions for the provider (remove "Provider" suffix if present or just match name property)
+        // The provider.name property in standard providers is just "Hugging Face", "PixelLab" etc.
+        const instructions = apiKeyGuides[providerName] || 'Please enter a valid API Key.';
+        
+        apiKeyInstructions.innerHTML = instructions;
+        apiKeyHelp.classList.remove('hidden');
+        apiKeyInput.classList.add('border-red-500', 'focus:border-red-500');
+        apiKeyInput.focus();
+    }
+
+    // Clear error on input
+    apiKeyInput.addEventListener('input', () => {
+        apiKeyHelp.classList.add('hidden');
+        apiKeyInput.classList.remove('border-red-500', 'focus:border-red-500');
+    });
 
     function setLoading(isLoading) {
         if (isLoading) {
